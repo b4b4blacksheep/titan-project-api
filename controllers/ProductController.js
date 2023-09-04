@@ -1,81 +1,109 @@
 const Product = require('../models/Product')
 const User = require('../models/User')
 
-// ADD A PRODUCT ADMIN ONLY
-module.exports.createProduct = (data) => {
-	if(data.isAdmin){
-		let new_product = new Product({
-			name: data.product.name,
-			description: data.product.description,
-			price: data.product.price,
-			imageLink: data.product.imageLink
-		})
-		
-		return new_product.save().then((new_product, error) => {
-			if(error){
-				return false
-			}
+// create-product [ admin-only ]
+module.exports.createProduct = async ({ isAdmin, productData }) => {
+  try {
+    if (!isAdmin) {
+      throw new Error('User must be ADMIN to access this.');
+    }
 
-			return {
-				message: 'New product successfully created!'
-			}
-		})
-	}
+    // Check if the product with the same _id or sku already exists
+    const existingProduct = await Product.findOne({
+      $or: [
+        { _id: productData._id },
+        { sku: productData.sku },
+      ],
+    });
 
-	let message = Promise.resolve({
-		message: 'User must be ADMIN to access this.'
-	})
+    if (existingProduct) {
+      throw new Error('Product with the same _id or sku already exists.');
+    }
 
-	return message.then((value) => {
-		return value
-	})
-}
+    const newProductData = {
+      name: productData.name,
+      description: productData.description,
+      price: productData.price,
+      imageLinks: productData.imageLinks,
+      sku: productData.sku,
+    };
 
+    const newProduct = new Product(newProductData);
 
-// RETRIEVE ALL ACTIVE PRODUCTS
-module.exports.retrieveAllActive = () => {
-	return Product.find({isActive: true}).then((result) => {
-		return result
-	})
-}
+    const savedProduct = await newProduct.save();
+    
+    if (!savedProduct) {
+      throw new Error('Failed to create the product.');
+    }
 
+    return {
+      message: 'New product successfully created!',
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      error: error.message || 'An error occurred while creating the product.',
+    };
+  }
+};
 
-// RETRIEVE SINGLE PRODUCT
+// active-products
+module.exports.retrieveAllActive = async () => {
+  try {
+    return await Product.find({ isActive: true }, { __v: 0, createdOn: 0, isActive: 0, orders: 0 });
+  } catch (error) {
+    throw error; // Rethrow the error to be handled by the caller
+  }
+};
+
+// retrieve-single-product
 module.exports.getProduct = (product_id) => {
-	return Product.findById(product_id).then((result) => {
-		return result 
-	})
-}
+  return Product.findById(product_id)
+    .select('-orders -__v')
+    .where({ isActive: true }) // Add a condition to only return active products
+    .then((result) => {
+      return result;
+    });
+};
+
+// retrieve-all-products [ admin only ]
+module.exports.getAllProducts = () => {
+  return Product.find({}, '-__v').then((result) => {
+    return result;
+  });
+};
 
 
-//UPDATE A PRODUCT [ADMIN ONLY]
-module.exports.updateProduct = (product_id, product_update) => {
-	if(product_update.isAdmin){
-		return Product.findByIdAndUpdate(product_id, {
-			name: product_update.product.name,
-			description: product_update.product.description,
-			price: product_update.product.price,
-			imageLink: product_update.product.imageLink
-		}).then((result, error) => {
-			if(error) {
-				return false
-			}
+// retrieve-all-products [ admin only ]
+module.exports.updateProduct = async (product_id, product_update) => {
+  try {
 
-			return {
-				message: 'New product successfully created!'
-			}
-		})
-	}
+    const updatedProduct = {
+      name: product_update.name,
+      sku: product_update.sku,
+      description: product_update.description,
+      price: product_update.price,
+      imageLinks: product_update.imageLinks,
+    };
 
-	let message = Promise.resolve({
-		message: 'User must be ADMIN to access this.'
-	})
+    const result = await Product.findByIdAndUpdate(product_id, updatedProduct);
 
-	return message.then((value) => {
-		return value
-	})
-}
+    if (!result) {
+      throw new Error('Product not found or update failed.');
+    }
 
+    return { message: 'Product successfully updated.' };
+  } catch (error) {
+    console.error(error);
+    return { error: 'An error occurred while updating the product.' };
+  }
+};
+
+
+
+
+
+// Not yet done!
 
 //ARCHIVE A PRODUCT ADMIN ONLY (TO DELETE)
 module.exports.archiveProduct = (product_id, product_update) => {
@@ -126,12 +154,3 @@ module.exports.archiveReturnProduct = (product_id, product_update) => {
 		return value
 	})
 }
-
-
-// Get all Products
-module.exports.getAllProducts = () => {
-	return Product.find({}).then((result) => {
-		return result
-	})
-}
-
