@@ -94,5 +94,3 @@ module.exports.userOrders = async (userId) => {
     throw new Error('Error while retrieving user orders.');
   }
 };
-
-

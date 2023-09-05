@@ -30,18 +30,6 @@ const productSchema = new mongoose.Schema({
       type: String,
       required: [true, "Image Link is required."]
     }
-  ],
-  orders: [
-    {
-      orderId: {
-        type: String,
-        required: [true, 'OrderId is Required.']
-      },
-      orderedOn: {
-        type: Date,
-        default: new Date()
-      }
-    }
   ]
 });
 
