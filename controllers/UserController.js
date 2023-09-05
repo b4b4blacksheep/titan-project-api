@@ -167,7 +167,6 @@ module.exports.retrieveAllUser = () => {
     });
 };
 
-
 // user-details [ using-token ]
 module.exports.getProfile = (data) => {
   // Use a projection to exclude the password field

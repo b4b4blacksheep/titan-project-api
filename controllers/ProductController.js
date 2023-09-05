@@ -73,7 +73,6 @@ module.exports.getAllProducts = () => {
   });
 };
 
-
 // retrieve-all-products [ admin only ]
 module.exports.updateProduct = async (product_id, product_update) => {
   try {
@@ -99,58 +98,37 @@ module.exports.updateProduct = async (product_id, product_update) => {
   }
 };
 
+// archive-product [ admin-only ]
+module.exports.archiveProduct = async (product_id) => {
+  try {
+    // Find the product by ID
+    const product = await Product.findById(product_id);
 
+    if (!product) {
+      throw new Error('Product not found.');
+    }
 
+    // Toggle the isActive field
+    product.isActive = !product.isActive;
 
+    // Save the updated product
+    const updatedProduct = await product.save();
 
-// Not yet done!
+    if (!updatedProduct) {
+      throw new Error('Product update failed.');
+    }
 
-//ARCHIVE A PRODUCT ADMIN ONLY (TO DELETE)
-module.exports.archiveProduct = (product_id, product_update) => {
-	if(product_update.isAdmin){
-		return Product.findByIdAndUpdate(product_id, {
-			isActive: product_update.product.isActive,
-		}).then((result, error) => {
-			if(error) {
-				return false
-			}
+    // Determine the message based on the isActive field
+    let message = '';
+    if (product.isActive) {
+      message = 'Product has been activated.';
+    } else {
+      message = 'Product has been archived.';
+    }
 
-			return {
-				message: 'Archiving a product successfully!'
-			}
-		})
-	}
-
-	let message = Promise.resolve({
-		message: 'User must be ADMIN to access this.'
-	})
-
-	return message.then((value) => {
-		return value
-	})
-}
-
-//ARCHIVE A PRODUCT ADMIN ONLY (TO UNDO-DELTE)
-module.exports.archiveReturnProduct = (product_id, product_update) => {
-	if(product_update.isAdmin){
-		return Product.findByIdAndUpdate(product_id, {
-			isActive: product_update.product.isActive,
-		}).then((result, error) => {
-			if(error) {
-				return true
-			}
-
-			return {
-				message: 'Archiving a product successfully!'
-			}
-		})
-	}
-
-	let message = Promise.resolve({
-		message: 'User must be ADMIN to access this.'
-	})
-
-	return message.then((value) => {
-		return value
-	})
-}
+    return { message };
+  } catch (error) {
+    console.error(error);
+    return { error: 'An error occurred while archiving the product.' };
+  }
+};

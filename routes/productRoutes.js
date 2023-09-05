@@ -8,8 +8,6 @@ const ProductController = require('../controllers/ProductController')
 const User = require('../models/User')
 const UserController = require('../controllers/UserController')
 
-
-
 // create-product [ admin-only ]
 router.post('/create-product', auth.verify, async (request, response) => {
   try {
@@ -100,37 +98,31 @@ router.patch('/:productId/update-product', async (request, response) => {
   }
 });
 
+// archive-product [ admin-only ]
+router.delete('/:productId/archive-product', auth.verify, async (request, response) => {
+  try {
+    const productId = request.params.productId;
+    const productData = request.body;
 
+    // Authenticate and check if the user is an admin using your auth module
+    const isAdmin = await auth.decode(request.headers.authorization).isAdmin;
 
+    if (!isAdmin) {
+      return response.status(403).json({ error: 'Access denied. User must be ADMIN.' });
+    }
 
+    const result = await ProductController.archiveProduct(productId, productData);
 
-// Not yet done!
+    if (result.error) {
+      // Handle errors from ProductController.updateProduct
+      return response.status(400).json({ error: result.error });
+    }
 
-//Archieve a product [ADMIN ONLY]
-router.patch('/:productId/archive-product', auth.verify, (request, response) => {
-	const data = {
-		product: request.body,
-		isAdmin: auth.decode(request.headers.authorization).isAdmin
-	}
-
-	ProductController.archiveProduct(request.params.productId, data).then((result) => {
-		response.send(result)
-	})
-})
-
-//Archieve a product [ADMIN ONLY] (TO UNDO-DELTE)
-router.patch('/:productId/archive-product-availability', auth.verify, (request, response) => {
-	const data = {
-		product: request.body,
-		isAdmin: auth.decode(request.headers.authorization).isAdmin
-	}
-
-	ProductController.archiveReturnProduct(request.params.productId, data).then((result) => {
-		response.send(result)
-	})
-})
-
-
-
+    response.json(result);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 module.exports = router 
