@@ -52,19 +52,29 @@ module.exports.retrieveAllActive = async () => {
   try {
     return await Product.find({ isActive: true }, { __v: 0, createdOn: 0, isActive: 0, orders: 0 });
   } catch (error) {
-    throw error; // Rethrow the error to be handled by the caller
+    throw error;
   }
 };
 
 // retrieve-single-product
-module.exports.getProduct = (product_id) => {
-  return Product.findById(product_id)
-    .select('-orders -__v')
-    .where({ isActive: true }) // Add a condition to only return active products
-    .then((result) => {
-      return result;
-    });
-};
+module.exports.getProduct = async (product_id) => {
+    try {
+        const product = await Product.findById(product_id)
+            .select('-orders -__v -createdOn -isActive');
+        
+        if (!product) {
+            throw new Error('Product not found');
+        }
+
+        return product;
+    } catch (error) {
+        // Log the error (for your reference)
+        console.error('Error fetching product:', error.message);
+        
+        // Throw the error so the caller can handle or respond accordingly
+        throw error;
+    }
+}
 
 // retrieve-all-products [ admin only ]
 module.exports.getAllProducts = () => {
@@ -74,18 +84,18 @@ module.exports.getAllProducts = () => {
 };
 
 // retrieve-all-products [ admin only ]
-module.exports.updateProduct = async (product_id, product_update) => {
+module.exports.updateProduct = async (productId, productUpdate) => {
   try {
 
     const updatedProduct = {
-      name: product_update.name,
-      sku: product_update.sku,
-      description: product_update.description,
-      price: product_update.price,
-      imageLinks: product_update.imageLinks,
+      name: productUpdate.name,
+      sku: productUpdate.sku,
+      description: productUpdate.description,
+      price: productUpdate.price,
+      imageLinks: productUpdate.imageLinks,
     };
 
-    const result = await Product.findByIdAndUpdate(product_id, updatedProduct);
+    const result = await Product.findByIdAndUpdate(productId, updatedProduct);
 
     if (!result) {
       throw new Error('Product not found or update failed.');
