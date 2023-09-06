@@ -26,7 +26,7 @@ router.post('/register', async (request, response) => {
 
         const result = await UserController.register(request.body);
 
-        response.status(201).json(result); // Assuming result is an object or data you want to send back.
+        response.status(201).json(result); 
     } catch (error) {
         console.error('Registration error:', error);
         
@@ -36,7 +36,7 @@ router.post('/register', async (request, response) => {
 
 // login
 router.post("/login", (request, response) => {
-  // Basic input validation
+
   if (!request.body || !request.body.email || !request.body.password) {
     return response.status(400).send("Missing required fields.");
   }
@@ -104,60 +104,56 @@ router.delete('/update-user', auth.verify, async (request, response) => {
 });
 
 // active-users [ admin-only ]
-router.get('/active-users', auth.verify, (request, response) => {
-  UserController.retrieveAllActiveUser().then((result) => {
-      response.status(200).json(result);
-    })
-    .catch((error) => {
-      console.error('Error in /active-users route:', error);
-      response.status(500).json({ error: 'Internal Server Error' });
-    });
+router.get('/users', auth.verify, async (request, response) => {
+  try {
+    const isAdmin = auth.decode(request.headers.authorization).isAdmin;
+
+    if (!isAdmin) {
+      return response.status(403).json({ error: 'Permission denied. Only admins can access this.' });
+    }
+
+    const result = await UserController.retrieveAllActiveUser();
+    response.status(200).json(result);
+
+  } catch (error) {
+    console.error('Error in /active-users route:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 // all-users [ admin-only ]
-router.get('/all-users', auth.verify, (request, response) => {
-  UserController.retrieveAllUser().then((result) => {
-      response.status(200).json(result);
-    })
-    .catch((error) => {
-      console.error('Error in /active-users route:', error);
-      response.status(500).json({ error: 'Internal Server Error' });
-    });
-});
-
-// user-details [ using-token ]
-router.get("/details", auth.verify, async (request, response) => {
+router.get('/', auth.verify, async (request, response) => {
   try {
-    // Decoding the token securely
-    const token = request.headers.authorization;
-    const user_data = auth.decode(token);
+    const isAdmin = auth.decode(request.headers.authorization).isAdmin;
 
-    if (!user_data || !user_data.id) {
-      return response.status(401).json({ error: "Unauthorized" });
+    if (!isAdmin) {
+      return response.status(403).json({ error: 'Permission denied. Only admins can access this.' });
     }
 
-    // Perform authorization checks if needed
-
-    // Fetch user profile based on the user's ID
-    const result = await UserController.getProfile({ userId: user_data.id });
-
-    // Respond with the user's profile data
+    const result = await UserController.retrieveAllUser();
     response.status(200).json(result);
+
   } catch (error) {
-    
-    handleError(error, response);
-
-  }
-});
-
-function handleError(error, response) {
-  console.error('Error:', error);
-
-  if (error instanceof UnauthorizedError) {
-    response.status(401).json({ error: "Unauthorized" });
-  } else {
+    console.error('Error in /all-users route:', error);
     response.status(500).json({ error: 'Internal Server Error' });
   }
-}
+})
+
+// user-details [ using-token ]
+router.get("/details", auth.verify, (request, response) => {
+  const user_data = auth.decode(request.headers.authorization);
+  
+  UserController.getProfile({ userId: user_data.id })
+    .then(result => {
+      if (!result) {
+        return response.status(404).json({ message: "User profile not found." });
+      }
+      response.status(200).send(result);
+    })
+    .catch(error => {
+      console.error('Error in /details route:', error);
+      response.status(500).json({ message: 'Internal Server Error' });
+    });
+});
 
 module.exports = router

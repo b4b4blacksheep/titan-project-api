@@ -159,7 +159,7 @@ module.exports.updateActive = (email, isActive) => {
 
 // active-users [ admin-only ]
 module.exports.retrieveAllActiveUser = () => {
-  return User.find({ isAdmin: false })
+  return User.find({ isActive: true })
     .select('-__v -isAdmin -password') // Exclude __v, isAdmin, and password fields
     .then((result) => {
       return result;
@@ -182,19 +182,16 @@ module.exports.retrieveAllUser = () => {
 
 // user-details [ using-token ]
 module.exports.getProfile = (data) => {
-  // Use a projection to exclude the password field
-  return User.findById(data.userId, { password: 0 })
-    .then((result) => {
-      if (!result) {
-        throw new Error('User not found');
+  return User.findById(data.userId)
+    .select('-__v -password -isActive -isAdmin') 
+    .then(user => {
+      if (!user) {
+        throw new Error("User not found.");
       }
-
-      // Create a new object without the password field
-      const profileData = { ...result.toObject() };
-      delete profileData.password;
-      delete profileData.__v;
-      delete profileData.isAdmin;
-
-      return profileData;
+      return user;
+    })
+    .catch(error => {
+      console.error('Error in getProfile:', error);
+      throw error;  
     });
 };
