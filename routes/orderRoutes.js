@@ -40,7 +40,7 @@ router.post('/create-order', auth.verify, (request, response) => {
 });
 
 // all-orders [ user-only ]
-router.get('/active-users', auth.verify, (request, response) => {
+router.get('/active-orders', auth.verify, (request, response) => {
   try {
     // Check if the user is an admin
     const isAdmin = auth.decode(request.headers.authorization).isAdmin;
@@ -60,10 +60,15 @@ router.get('/active-users', auth.verify, (request, response) => {
 });
 
 // all-orders [ user-only ]
-router.get('/orders', auth.verify, async (request, response) => {
+router.get('/', auth.verify, async (request, response) => {
   try {
     // Ensure the user is authenticated
     const decodedToken = auth.decode(request.headers.authorization);
+    const isAdmin = auth.decode(request.headers.authorization).isAdmin;
+
+    if(isAdmin){
+      return response.status(401).json({ error: 'Unauthorized. This is an admin account.' });
+    }
     
     if (!decodedToken || !decodedToken.id) {
       return response.status(401).json({ error: 'Unauthorized. Please log in.' });
