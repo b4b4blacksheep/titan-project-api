@@ -85,16 +85,15 @@ router.patch('/admin-update', auth.verify, async (request, response) => {
   }
 });
 
-// delete-user [ admin-only ]
-router.delete('/delete-user', auth.verify, async (request, response) => {
+// update-user [ admin-only ]
+router.delete('/update-user', auth.verify, async (request, response) => {
   try {
-    console.log(auth.verify)
-
     const { email, isActive } = request.body;
+    const isAdmin = auth.decode(request.headers.authorization).isAdmin;
 
-    // Validate input data (isActive is assumed to be a boolean)
-    if (typeof isActive !== 'boolean' || !email) {
-      return response.status(400).json({ error: 'Invalid data provided' });
+    // Check if the user is an admin (if that's the requirement)
+    if (!isAdmin) {
+      return response.status(403).json({ error: 'Permission denied. Only admins can update this status.' });
     }
 
     const result = await UserController.updateActive(email, isActive);

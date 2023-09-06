@@ -128,7 +128,7 @@ module.exports.updateAdmin = async (data) => {
   }
 };
 
-// delete-user [ admin-only ]
+// update-user [ admin-only ]
 module.exports.updateActive = (email, isActive) => {
   // Validate input data (isActive is assumed to be a boolean)
   if (typeof isActive !== 'boolean') {
