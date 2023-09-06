@@ -5,38 +5,36 @@ const auth = require('../auth')
 // register
 module.exports.register = async (data) => {
   try {
-    // Validate data (e.g., email format, password strength)
     if (!data.email || !data.password) {
       throw new Error('Email and password are required');
     }
 
-    // Check if the email is already registered
+    // Enhanced validation can be added here
+
     const existingUser = await User.findOne({ email: data.email });
     if (existingUser) {
-      return {
-        message: 'Email is already registered'
-      };
+      throw new Error('Email is already registered');
     }
 
-    // Hash the password
-    const encrypted_password = bcrypt.hashSync(data.password, 10);
+    // Using asynchronous bcrypt.hash instead of hashSync
+    const encrypted_password = await bcrypt.hash(data.password, 10);
 
-    // Create a new user
     const newUser = new User({
       email: data.email,
       password: encrypted_password,
     });
 
-    // Save the user to the database
     const created_user = await newUser.save();
 
     return {
       message: 'User successfully registered!',
-      userId: created_user._id
+      // Decide if you want to return userId based on your use case
+      userId: created_user._id 
     };
+
   } catch (error) {
-    console.error('Error in register:', error.message);
-    throw error; // Rethrow the error to be handled by the caller
+    console.error('Error in register:', error);
+    throw error;
   }
 };
 
@@ -47,23 +45,24 @@ module.exports.login = async (data) => {
 
     if (!user) {
       return {
-        message: "Authentication failed"
+        message: "Invalid email!"
       };
     }
 
-    const isPasswordCorrect = bcrypt.compareSync(data.password, user.password);
+    const isPasswordCorrect = await bcrypt.compare(data.password, user.password);
 
-    if (isPasswordCorrect) {
+    if (!isPasswordCorrect) {
       return {
-        accessToken: auth.createAccessToken(user)
-      };
+        message: "Please provide the correct password!"
+      }
     }
 
     return {
-      message: "Authentication failed"
+      accessToken: auth.createAccessToken(user)    
     };
+
   } catch (error) {
-    console.error('Error in login:', error);
+    console.error('Error in login.');
     throw error; // Rethrow the error to be handled by the caller
   }
 };
@@ -71,48 +70,62 @@ module.exports.login = async (data) => {
 // check-if-email-exist
 module.exports.checkIfEmailExists = async (data) => {
   try {
+
     const emailToCheck = data.email;
-    
+
     const result = await User.findOne(
       { email: emailToCheck },
-      { _id: 0, email: 1 } // Projection, it guarantees that the found document will only return email only.
+      { _id: 0, email: 1 }
     );
 
-    return !!result; // Convert the result to a boolean
+    return !!result;
 
   } catch (error) {
     console.error('Error in checkIfEmailExists:', error);
-    throw error; // Rethrow the error to be handled by the caller
+    throw error;
   }
 };
 
 // admin-update [ admin-only ]
-module.exports.updateAdmin = (email, isAdmin) => {
-  // Validate input data (isAdmin is assumed to be a boolean)
-  if (typeof isAdmin !== 'boolean') {
-    throw new Error('Invalid isAdmin value');
+module.exports.updateAdmin = async (data) => {
+  // Validate input data
+  if (!data.email) {
+    throw new Error('Email is required');
   }
 
-  return User.findOneAndUpdate(
-    { email: email },
-    { isAdmin: isAdmin },
-    { new: true } // To get the updated document
-  )
-    .then((updatedUser) => {
-      if (!updatedUser) {
-        throw new Error('Admin status update failed: User not found');
-      }
+  // Check if the user making the request is an admin
+  if (!data.isAdmin) {
+    throw new Error('Permission denied: Only admins can update this status');
+  }
 
-      // Return the updated user
-      return {
-        message: 'Admin status has been updated successfully!',
-        updatedAdmin: { email: updatedUser.email, isAdmin: updatedUser.isAdmin },
-      };
-    })
-    .catch((error) => {
-      console.error('Error in updateAdmin:', error);
-      throw error; // Rethrow the error to be handled by the caller
-    });
+  try {
+    // Fetch the current user's data
+    const currentUser = await User.findOne({ email: data.email });
+
+    // If the user is not found, throw an error
+    if (!currentUser) {
+      throw new Error('User not found');
+    }
+
+    // Toggle the isAdmin value
+    const newIsAdminStatus = !currentUser.isAdmin;
+
+    // Update the user's isAdmin status in the database
+    const updatedUser = await User.findOneAndUpdate(
+      { email: data.email },
+      { isAdmin: newIsAdminStatus },
+      { new: true } // To get the updated document
+    );
+
+    // Return the updated user
+    return {
+      message: 'Admin status has been updated successfully!',
+      updatedAdmin: { email: updatedUser.email, isAdmin: updatedUser.isAdmin },
+    };
+  } catch (error) {
+    console.error('Error in updateAdmin:', error);
+    throw error; // Rethrow the error to be handled by the caller
+  }
 };
 
 // delete-user [ admin-only ]

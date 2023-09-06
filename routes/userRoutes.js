@@ -4,50 +4,80 @@ const express = require('express')
 const router = express.Router()
 const auth = require('../auth')
 
+const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+const minPasswordLength = 8;
+
+const isValidInput = (body) => {
+    if (!body.email || !emailRegex.test(body.email)) {
+        return false;
+    }
+    if (!body.password || body.password.length < minPasswordLength) {
+        return false;
+    }
+    return true;
+};
+
 // register
 router.post('/register', async (request, response) => {
-  try {
-    const registrationResult = await UserController.register(request.body);
-    response.json(registrationResult);
-  } catch (error) {
-    console.error('Error in /register route:', error);
-    response.status(500).json({ error: 'Internal Server Error' });
-  }
+    try {
+        if (!isValidInput(request.body)) {
+            return response.status(400).json({ error: "Invalid email or password" });
+        }
+
+        const result = await UserController.register(request.body);
+
+        response.status(201).json(result); // Assuming result is an object or data you want to send back.
+    } catch (error) {
+        console.error('Registration error:', error);
+        
+        response.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 // login
 router.post("/login", (request, response) => {
-  UserController.login(request.body).then((result) => {
+  // Basic input validation
+  if (!request.body || !request.body.email || !request.body.password) {
+    return response.status(400).send("Missing required fields.");
+  }
+
+  UserController.login(request.body)
+    .then((result) => {
       response.send(result);
     })
-  .catch((error) => {
-      console.error("Error in /login route:", error);
-      response.status(500).send("Internal Server Error");
+    .catch((error) => {
+      console.error("Error in /login route.");
+
+      response.status(500).send("An error occurred. Please try again.");
     });
 });
 
 // check-if-email-exist
 router.post("/check-email", (request, response) => {
+
+  if (!request.body.email || !emailRegex.test(request.body.email)) {
+    return response.status(400).json('Invalid email format');
+  }
+
   UserController.checkIfEmailExists(request.body).then((result) => {
-      response.send(result);
+      response.json(result);
     })
     .catch((error) => {
+
       console.error("Error in /check-email route:", error);
       response.status(500).send("Internal Server Error");
     });
 });
 
-// admin-update
+// admin-update [ admin-only ]
 router.patch('/admin-update', auth.verify, async (request, response) => {
   try {
-    const { email, isAdmin } = request.body;
+    const data = {
+      isAdmin: auth.decode(request.headers.authorization).isAdmin,
+      email: request.body.email
+    };
 
-    // Validate input data (isAdmin is assumed to be a boolean)
-    if (typeof isAdmin !== 'boolean' || !email) {
-      return response.status(400).json({ error: 'Invalid data provided' });
-    }
-
-    const result = await UserController.updateAdmin(email, isAdmin);
+    const result = await UserController.updateAdmin(data);
     response.status(200).json(result);
   } catch (error) {
     console.error('Error in /admin-update route:', error);
@@ -58,6 +88,8 @@ router.patch('/admin-update', auth.verify, async (request, response) => {
 // delete-user [ admin-only ]
 router.delete('/delete-user', auth.verify, async (request, response) => {
   try {
+    console.log(auth.verify)
+
     const { email, isActive } = request.body;
 
     // Validate input data (isActive is assumed to be a boolean)
@@ -68,8 +100,7 @@ router.delete('/delete-user', auth.verify, async (request, response) => {
     const result = await UserController.updateActive(email, isActive);
     response.status(200).json(result);
   } catch (error) {
-    console.error('Error in /admin-update route:', error);
-    response.status(500).json({ error: 'Internal Server Error' });
+    handleError(error, response);
   }
 });
 
@@ -114,15 +145,20 @@ router.get("/details", auth.verify, async (request, response) => {
     // Respond with the user's profile data
     response.status(200).json(result);
   } catch (error) {
-    console.error('Error in /details route:', error);
+    
+    handleError(error, response);
 
-    // Handle and respond to errors
-    if (error.name === 'UnauthorizedError') {
-      response.status(401).json({ error: "Unauthorized" });
-    } else {
-      response.status(500).json({ error: 'Internal Server Error' });
-    }
   }
 });
+
+function handleError(error, response) {
+  console.error('Error:', error);
+
+  if (error instanceof UnauthorizedError) {
+    response.status(401).json({ error: "Unauthorized" });
+  } else {
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+}
 
 module.exports = router

@@ -43,19 +43,37 @@ module.exports.verify = (request, response, next) => {
   }
 };
 
-// For extracting the user data from the token
 module.exports.decode = (token) => {
-  if (typeof token !== "undefined") {
-    token = token.slice(7); // Remove "Bearer " prefix
 
-    try {
-      const decoded = jwt.verify(token, secret);
-      return decoded;
-    } catch (error) {
-      console.error("JWT verification error:", error);
-      return null;
-    }
-  } else {
-    return null;
-  }
+  // Token recieved and is not undefined
+  if(typeof token !== "undefined"){
+
+    // Retrieves only the token and removes the "Bearer " prefix
+    token = token.slice(7, token.length);
+
+      return jwt.verify(token, secret, (error, data) => {
+
+        if (error) {
+
+          return null;
+
+        } else {
+
+        // The "decode" method is used to obtain the information from the JWT
+        // The "{complete:true}" option allows us to return additional information from the JWT token
+        // Returns an object with access to the "payload" property which contains user information stored when the token was generated
+        // The payload contains information provided in the "createAccessToken" method defined above (e.g. id, email and isAdmin)
+        return jwt.decode(token, {complete:true}).payload;
+          // return decoded
+          };
+
+        })
+
+    // Token does not exist
+    } else {
+
+  return null;
+
+  };
+
 };
