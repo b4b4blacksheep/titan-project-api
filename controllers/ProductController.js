@@ -22,10 +22,18 @@ module.exports.createProduct = async ({ isAdmin, productData }) => {
 
     const newProductData = {
       name: productData.name,
+      brand: productData.brand,
+      color: productData.color,
+      sku: productData.sku,
       description: productData.description,
       price: productData.price,
       imageLinks: productData.imageLinks,
-      sku: productData.sku,
+      status: productData.status,
+      sizes: productData.sizes,
+      category: productData.category,
+      isOnSale: productData.isOnSale,
+      onSaleValue: productData.onSaleValue,
+      
     };
 
     const newProduct = new Product(newProductData);
@@ -50,7 +58,251 @@ module.exports.createProduct = async ({ isAdmin, productData }) => {
 // active-products
 module.exports.retrieveAllActive = async () => {
   try {
-    return await Product.find({ isActive: true }, { __v: 0, createdOn: 0, isActive: 0, orders: 0 });
+    return await Product.find({ isActive: true }, { __v: 0, createdOn: 0, isActive: 0, orders: 0 }).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+};
+
+  // Footwear
+module.exports.retrieveAllActiveFootwear = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: true,
+          category: "Footwear"
+
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports.retrieveNonActiveFootwear = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: false,
+          category: "Footwear"
+
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports.retrieveArchivedFootwear = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: false,
+          isArchived: true,
+          category: "Footwear"
+
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+  // Apparel
+module.exports.retrieveAllActiveApparel = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: true,
+          category: "Apparel"
+
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports.retrieveNonActiveApparel = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: false,
+          category: "Apparel"
+
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports.retrieveArchivedApparel = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: false,
+          isArchived: true,
+          category: "Apparel"
+
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+// new-products
+module.exports.retrieveNewProducts = async () => {
+  try {
+    return await Product.find(
+      { 
+        isActive: true,
+        isOnSale: false
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+};
+
+// onSale-products
+module.exports.retrieveOnSale = async () => {
+  try {
+    return await Product.find(
+      { 
+        isActive: true,
+        isOnSale: true
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+};
+
+// footwear-products
+module.exports.retrieveFootwear = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: true,
+          category: 'Footwear'
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+};
+
+// footwear-products [ admin-only ]
+module.exports.retrieveFootwearAdmin = async () => {
+  try {
+    return await Product.find(
+      { 
+          category: 'Footwear'
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+};
+
+// apparel-products
+module.exports.retrieveApparel = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: true,
+          category: 'Apparel'
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+};
+
+// accessories-products
+module.exports.retrieveAccessories = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: true,
+          category: 'Accessories' || 'accessories'
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
   } catch (error) {
     throw error;
   }
@@ -83,16 +335,21 @@ module.exports.getAllProducts = () => {
   });
 };
 
-// retrieve-all-products [ admin only ]
+// update-product [ admin only ]
 module.exports.updateProduct = async (productId, productUpdate) => {
   try {
 
     const updatedProduct = {
       name: productUpdate.name,
+      brand: productUpdate.brand,
+      color: productUpdate.color,
       sku: productUpdate.sku,
       description: productUpdate.description,
       price: productUpdate.price,
       imageLinks: productUpdate.imageLinks,
+      isOnSale: productUpdate.isOnSale,
+      onSaleValue: productUpdate.onSaleValue,
+      status: productUpdate.status
     };
 
     const result = await Product.findByIdAndUpdate(productId, updatedProduct);

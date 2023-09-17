@@ -1,12 +1,13 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const dotenv = require('dotenv')
-const mongoose = require('mongoose')
-const cors = require('cors')
+const express = require('express');
+const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+const cors = require('cors');
 
-const userRoutes = require('./routes/userRoutes')
-const productRoutes = require('./routes/productRoutes')
-const orderRoutes = require('./routes/orderRoutes')
+const userRoutes = require('./routes/userRoutes');
+const productRoutes = require('./routes/productRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 
 dotenv.config()
@@ -15,6 +16,7 @@ dotenv.config()
 const app = express()
 const port = process.env.PORT || 8008 
 const dbURL = process.env.DATABASE_URL;
+
 
 // MongoDB Connection
 mongoose.connect(dbURL, {
@@ -36,6 +38,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/users', userRoutes)
 app.use('/products', productRoutes)
 app.use('/orders', orderRoutes)
+app.use('/cart', cartRoutes)
 
 
 app.listen(port, () => {

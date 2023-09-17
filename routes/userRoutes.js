@@ -1,8 +1,8 @@
-const UserController = require('../controllers/UserController')
+const UserController = require('../controllers/UserController');
 
-const express = require('express')
-const router = express.Router()
-const auth = require('../auth')
+const express = require('express');
+const router = express.Router();
+const auth = require('../auth');
 
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 const minPasswordLength = 8;

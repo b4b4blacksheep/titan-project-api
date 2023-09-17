@@ -5,8 +5,8 @@ const auth = require('../auth')
 // register
 module.exports.register = async (data) => {
   try {
-    if (!data.email || !data.password) {
-      throw new Error('Email and password are required');
+    if (!data.email || !data.password || !data.mobileNumber || !data.firstName || !data.lastName) {
+      throw new Error('All fields are required');
     }
 
     // Enhanced validation can be added here
@@ -22,6 +22,9 @@ module.exports.register = async (data) => {
     const newUser = new User({
       email: data.email,
       password: encrypted_password,
+      mobileNumber: data.mobileNumber,
+      firstName: data.firstName,
+      lastName: data.lastName,
     });
 
     const created_user = await newUser.save();
@@ -41,7 +44,9 @@ module.exports.register = async (data) => {
 // login
 module.exports.login = async (data) => {
   try {
+    console.log(data)
     const user = await User.findOne({ email: data.email });
+
 
     if (!user) {
       return {
@@ -183,7 +188,7 @@ module.exports.retrieveAllUser = () => {
 // user-details [ using-token ]
 module.exports.getProfile = (data) => {
   return User.findById(data.userId)
-    .select('-__v -password -isActive -isAdmin') 
+    .select('-__v -password -isActive') 
     .then(user => {
       if (!user) {
         throw new Error("User not found.");
