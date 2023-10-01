@@ -8,6 +8,7 @@ const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const brandRoutes = require('./routes/brandRoutes');
 
 
 dotenv.config()
@@ -39,6 +40,7 @@ app.use('/users', userRoutes)
 app.use('/products', productRoutes)
 app.use('/orders', orderRoutes)
 app.use('/cart', cartRoutes)
+app.use('/brands', brandRoutes)
 
 
 app.listen(port, () => {

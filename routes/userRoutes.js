@@ -156,4 +156,66 @@ router.get("/details", auth.verify, (request, response) => {
     });
 });
 
+// adding an address [ users-only ]
+router.patch('/add-address',  auth.verify, async (req, res) => {
+  try {
+
+    // Decode the token and get the user ID
+    const decodedData = auth.decode(req.headers.authorization);
+    if (!decodedData || !decodedData.id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    
+    const userId = decodedData.id;
+    const addressDetails = req.body;
+
+    const result = await UserController.addAddress(userId, addressDetails);
+
+    res.status(200).json(result);
+
+  } catch (error) {
+    console.error('Error while adding address:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// removing an address [ users-only ]
+router.delete('/remove-address', auth.verify, async (req, res) => {
+  try {
+    // Decode the token and get the user ID
+    const decodedData = auth.decode(req.headers.authorization);
+    if (!decodedData || !decodedData.id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    
+    const userId = decodedData.id;
+    const addressId = req.body.addressId; // Get address _id from request body
+
+    const result = await UserController.removeAddress(userId, addressId);
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error while removing address:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// user-adressess [ users-only | using-token ]
+router.get('/address', auth.verify, async (request, response) => {
+  const user_data = auth.decode(request.headers.authorization);
+  
+  UserController.getAddress({ userId: user_data.id })
+    .then(result => {
+      if (!result) {
+        return response.status(404).json({ message: "Address doesn't exist!" });
+      }
+      response.status(200).send(result);
+    })
+    .catch(error => {
+      console.error('Error in /details route:', error);
+      response.status(500).json({ message: 'Internal Server Error' });
+    });
+});
+
+
 module.exports = router

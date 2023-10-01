@@ -20,10 +20,6 @@ const order_schema = new mongoose.Schema({
 				},
 			}
 		],
-	totalAmount: {
-		type: Number,
-		require: [true, "totalAmount is required."]
-	},
 	purchasedOn: {
 		type: Date,
 		default: new Date()

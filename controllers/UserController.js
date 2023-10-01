@@ -5,16 +5,6 @@ const auth = require('../auth')
 // register
 module.exports.register = async (data) => {
   try {
-    if (!data.email || !data.password || !data.mobileNumber || !data.firstName || !data.lastName) {
-      throw new Error('All fields are required');
-    }
-
-    // Enhanced validation can be added here
-
-    const existingUser = await User.findOne({ email: data.email });
-    if (existingUser) {
-      throw new Error('Email is already registered');
-    }
 
     // Using asynchronous bcrypt.hash instead of hashSync
     const encrypted_password = await bcrypt.hash(data.password, 10);
@@ -188,7 +178,7 @@ module.exports.retrieveAllUser = () => {
 // user-details [ using-token ]
 module.exports.getProfile = (data) => {
   return User.findById(data.userId)
-    .select('-__v -password -isActive') 
+    // .select('-__v -password -isActive') 
     .then(user => {
       if (!user) {
         throw new Error("User not found.");
@@ -200,3 +190,84 @@ module.exports.getProfile = (data) => {
       throw error;  
     });
 };
+
+// add-address [users-only]
+module.exports.addAddress = async (userId, newAddress) => {
+  try {
+    // Find the user by their ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return { status: 'error', message: 'User not found' };
+    }
+
+    // Iterate through existing addresses and set isPrimary to false
+    user.addresses.forEach(address => {
+      address.isPrimary = false;
+    });
+
+    // Add the new address and set its isPrimary to true
+    newAddress.isPrimary = true;
+    user.addresses.push(newAddress);
+
+    // Validate only the modified paths
+    await user.validate(user.modifiedPaths());
+
+    // Save without running validation again
+    await user.save({ validateBeforeSave: false });
+
+    return { status: 'success', message: 'Address added successfully', data: user };
+  } catch (error) {
+    console.error('Error in addAddress:', error);
+    return { status: 'error', message: 'Internal Server Error' };
+  }
+};
+
+// removing-address [ users-only ]
+module.exports.removeAddress = async (userId, addressId) => {
+  try {
+    // Find the user first
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return { status: 'error', message: 'User not found' };
+    }
+
+    // Remove the address with the given ID
+    user.addresses = user.addresses.filter(addr => addr._id.toString() !== addressId);
+
+    // Validate only the modified paths
+    await user.validate(user.modifiedPaths());
+
+    // Save without running validation again
+    await user.save({ validateBeforeSave: false });
+    
+    return { status: 'success', message: 'Address removed successfully', data: user };
+  } catch (error) {
+    console.error('Error in removeAddress:', error);
+    return { status: 'error', message: 'Internal Server Error' };
+  }
+};
+
+// user-adressess [ users-only | using-token ]
+module.exports.getAddress = async (data) => {
+  try {
+    const user = await User.findById(data.userId);
+    if (!user) {
+      throw new Error("User not found.");
+    }
+
+    if (user.addresses && user.addresses.length > 0) {
+      // Sort addresses so that primary addresses come first
+      const sortedAddresses = user.addresses.sort((a, b) => b.isPrimary - a.isPrimary);
+      return sortedAddresses;
+    } else {
+      // Return an empty array or some default value if no addresses are found
+      return [];
+    }
+  } catch (error) {
+    console.error('Error in getAddress:', error);
+    throw error;
+  }
+};
+

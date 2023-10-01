@@ -1,6 +1,14 @@
 const Product = require('../models/Product')
 const User = require('../models/User')
 
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 // create-product [ admin-only ]
 module.exports.createProduct = async ({ isAdmin, productData }) => {
   try {
@@ -188,6 +196,185 @@ module.exports.retrieveArchivedApparel = async () => {
   }
 }
 
+  // Accessories
+module.exports.retrieveAllActiveAccessories = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: true,
+          category: "Accessories"
+
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports.retrieveNonActiveAccessories = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: false,
+          category: "Accessories"
+
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports.retrieveArchivedAccessories = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: false,
+          isArchived: true,
+          category: "Accessories"
+
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+  // Accessories
+module.exports.retrieveAllActiveAccessories = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: true,
+          category: "Accessories"
+
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports.retrieveNonActiveAccessories = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: false,
+          category: "Accessories"
+
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports.retrieveArchivedAccessories = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: false,
+          isArchived: true,
+          category: "Accessories"
+
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+  // Shop-All
+module.exports.retrieveAllActiveAll = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: true
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports.retrieveNonActiveAll = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: false
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports.retrieveArchivedAll = async () => {
+  try {
+    return await Product.find(
+      { 
+          isActive: false,
+          isArchived: true,
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    ).sort({ _id: -1 });
+  } catch (error) {
+    throw error;
+  }
+}
 
 // new-products
 module.exports.retrieveNewProducts = async () => {
@@ -209,11 +396,60 @@ module.exports.retrieveNewProducts = async () => {
   }
 };
 
+
+// shopAll
+module.exports.retriveShopAll = async () => {
+  try {
+    let products = await Product.find(
+      { 
+        isActive: true,
+        isOnSale: false
+      },
+      {
+        __v: 0,
+        createdOn: 0,
+        isActive: 0,
+        orders: 0
+      }
+    );
+
+    // Custom sorting in JavaScript
+    const customOrder = ['Heat', 'Rare', 'Stock', 'Others'];
+    products = products.sort((a, b) => {
+      return customOrder.indexOf(a.status) - customOrder.indexOf(b.status);
+    });
+
+    return products;
+
+  } catch (error) {
+    throw error;
+  }
+};
+
+
 // onSale-products
+// module.exports.retrieveOnSale = async () => {
+//   try {
+//     return await Product.find(
+//       { 
+//         isActive: true,
+//         isOnSale: true
+//       },
+//       {
+//         __v: 0,
+//         createdOn: 0,
+//         isActive: 0,
+//         orders: 0
+//       }
+//     ).sort({ _id: -1 });
+//   } catch (error) {
+//     throw error;
+//   }
+// };
 module.exports.retrieveOnSale = async () => {
   try {
-    return await Product.find(
-      { 
+    const products = await Product.find(
+      {
         isActive: true,
         isOnSale: true
       },
@@ -223,7 +459,9 @@ module.exports.retrieveOnSale = async () => {
         isActive: 0,
         orders: 0
       }
-    ).sort({ _id: -1 });
+    );
+    
+    return shuffleArray(products);
   } catch (error) {
     throw error;
   }

@@ -156,7 +156,7 @@ router.get('/admin/non-active-apparel', auth.verify, async (request, response) =
   }
 });
 
-// archived-footwear [ admin-only ]
+// archived-apparel [ admin-only ]
 router.get('/admin/archived-apparel', auth.verify, async (request, response) => {
   try {
     const { isAdmin } = auth.decode(request.headers.authorization);
@@ -178,10 +178,162 @@ router.get('/admin/archived-apparel', auth.verify, async (request, response) => 
   }
 });
 
+  // Apparel
+
+// all-active-accessories [ admin-only ]
+router.get('/admin/all-active-accessories', auth.verify, async (request, response) => {
+  try {
+    const { isAdmin } = auth.decode(request.headers.authorization);
+
+    if (!isAdmin) {
+      return response.status(403).json({ error: 'Permission denied. Only admins can update this status.' });
+    }
+
+    const result = await ProductController.retrieveAllActiveAccessories();
+
+    if (result.length === 0) {
+      return response.status(404).json({ message: 'No active products found' });
+    }
+
+    response.status(200).json(result);
+  } catch (error) {
+    console.error('Error in /active-products route:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// non-active-accessories [ admin-only ]
+router.get('/admin/non-active-accessories', auth.verify, async (request, response) => {
+  try {
+    const { isAdmin } = auth.decode(request.headers.authorization);
+
+    if (!isAdmin) {
+      return response.status(403).json({ error: 'Permission denied. Only admins can update this status.' });
+    }
+
+    const result = await ProductController.retrieveNonActiveAccessories();
+
+    if (result.length === 0) {
+      return response.status(404).json({ message: 'No products found' });
+    }
+
+    response.status(200).json(result);
+  } catch (error) {
+    console.error('Error in /active-products route:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// archived-accessories [ admin-only ]
+router.get('/admin/archived-accessories', auth.verify, async (request, response) => {
+  try {
+    const { isAdmin } = auth.decode(request.headers.authorization);
+
+    if (!isAdmin) {
+      return response.status(403).json({ error: 'Permission denied. Only admins can update this status.' });
+    }
+
+    const result = await ProductController.retrieveArchivedAccessories();
+
+    if (result.length === 0) {
+      return response.status(404).json({ message: 'No archived products found' });
+    }
+
+    response.status(200).json(result);
+  } catch (error) {
+    console.error('Error in /active-products route:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+  // Shop-All
+
+// all-active-brands [ admin-only ]
+router.get('/admin/active-shop-all', auth.verify, async (request, response) => {
+  try {
+    const { isAdmin } = auth.decode(request.headers.authorization);
+
+    if (!isAdmin) {
+      return response.status(403).json({ error: 'Permission denied. Only admins can update this status.' });
+    }
+
+    const result = await ProductController.retrieveAllActiveAll();
+
+    if (result.length === 0) {
+      return response.status(404).json({ message: 'No active products found' });
+    }
+
+    response.status(200).json(result);
+  } catch (error) {
+    console.error('Error in /active-products route:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// non-active-brands [ admin-only ]
+router.get('/admin/non-active-shop-all', auth.verify, async (request, response) => {
+  try {
+    const { isAdmin } = auth.decode(request.headers.authorization);
+
+    if (!isAdmin) {
+      return response.status(403).json({ error: 'Permission denied. Only admins can update this status.' });
+    }
+
+    const result = await ProductController.retrieveNonActiveAll();
+
+    if (result.length === 0) {
+      return response.status(404).json({ message: 'No products found' });
+    }
+
+    response.status(200).json(result);
+  } catch (error) {
+    console.error('Error in /active-products route:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// archived-brands [ admin-only ]
+router.get('/admin/archived-shop-all', auth.verify, async (request, response) => {
+  try {
+    const { isAdmin } = auth.decode(request.headers.authorization);
+
+    if (!isAdmin) {
+      return response.status(403).json({ error: 'Permission denied. Only admins can update this status.' });
+    }
+
+    const result = await ProductController.retrieveArchivedAll();
+
+    if (result.length === 0) {
+      return response.status(404).json({ message: 'No archived products found' });
+    }
+
+    response.status(200).json(result);
+  } catch (error) {
+    console.error('Error in /active-products route:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 // new-products
 router.get('/new-arrivals', (request, response) => {
   ProductController.retrieveNewProducts().then((result) => {
+      if (result.length === 0) {
+
+        response.status(404).json({ message: 'No new products found' });
+      } else {
+
+        response.status(200).json(result);
+      }
+    })
+    .catch((error) => {
+      console.error('Error in /active-products route:', error);
+      response.status(500).json({ error: 'Internal Server Error' });
+    });
+});
+
+// shop-all
+router.get('/shop-all', (request, response) => {
+  ProductController.retriveShopAll().then((result) => {
       if (result.length === 0) {
 
         response.status(404).json({ message: 'No new products found' });
