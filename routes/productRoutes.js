@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const auth = require('../auth')
+const cache = require('memory-cache');
 
 const Product = require('../models/Product')
 const ProductController = require('../controllers/ProductController')
@@ -25,13 +26,33 @@ router.post('/create-product', auth.verify, async (request, response) => {
 });
 
 // active-products
-router.get('/', (request, response) => {
-  ProductController.retrieveAllActive().then((result) => {
-      if (result.length === 0) {
+// router.get('/', (request, response) => {
+//   ProductController.retrieveAllActive().then((result) => {
+//       if (result.length === 0) {
 
+//         response.status(404).json({ message: 'No active products found' });
+//       } else {
+
+//         response.status(200).json(result);
+//       }
+//     })
+//     .catch((error) => {
+//       console.error('Error in /active-products route:', error);
+//       response.status(500).json({ error: 'Internal Server Error' });
+//     });
+// });
+router.get('/', (request, response) => {
+  const cachedData = cache.get('activeProducts');
+  if (cachedData) {
+    return response.status(200).json(cachedData);
+  }
+
+  ProductController.retrieveAllActive()
+    .then((result) => {
+      if (result.length === 0) {
         response.status(404).json({ message: 'No active products found' });
       } else {
-
+        cache.put('activeProducts', result, 60000);  // Cache for 1 minute
         response.status(200).json(result);
       }
     })

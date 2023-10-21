@@ -1,5 +1,37 @@
-const Product = require('../models/Product')
-const User = require('../models/User')
+const Product = require('../models/Product');
+const User = require('../models/User');
+
+const cache = {};
+
+const addProduct = async (newProduct) => {
+  try {
+    // Create a new Product using the model and newProduct object passed as parameter
+    const product = new Product({
+      name: newProduct.name,
+      brand: newProduct.brand,
+      color: newProduct.color,
+      sku: newProduct.sku,
+      description: newProduct.description,
+      price: newProduct.price,
+      category: newProduct.category,
+      status: newProduct.status,
+      isActive: newProduct.isActive || true,
+      isArchived: newProduct.isArchived || false,
+      isOnSale: newProduct.isOnSale || false,
+      onSaleValue: newProduct.onSaleValue || 0,
+      imageLinks: newProduct.imageLinks,
+      sizes: newProduct.sizes,
+      // createdOn will be automatically set based on your schema
+    });
+
+    await product.save();  // Save the new product to the database
+
+    // Invalidate the cache
+    delete cache['activeProducts'];
+  } catch (error) {
+    throw error;  // Propagate the error so it can be handled upstream
+  }
+};
 
 const shuffleArray = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -64,9 +96,25 @@ module.exports.createProduct = async ({ isAdmin, productData }) => {
 };
 
 // active-products
+// module.exports.retrieveAllActive = async () => {
+//   try {
+//     return await Product.find({ isActive: true }, { __v: 0, createdOn: 0, isActive: 0, orders: 0 }).sort({ _id: -1 });
+//   } catch (error) {
+//     throw error;
+//   }
+// };
 module.exports.retrieveAllActive = async () => {
+  // First check if the data exists in cache
+  if (cache['activeProducts']) {
+    console.log("Serving from cache");
+    return cache['activeProducts'];
+  }
+
   try {
-    return await Product.find({ isActive: true }, { __v: 0, createdOn: 0, isActive: 0, orders: 0 }).sort({ _id: -1 });
+    const products = await Product.find({ isActive: true }, { __v: 0, createdOn: 0, isActive: 0, orders: 0 }).sort({ _id: -1 });
+    // Save the data to cache before returning
+    cache['activeProducts'] = products;
+    return products;
   } catch (error) {
     throw error;
   }
