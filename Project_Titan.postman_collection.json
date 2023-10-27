@@ -1,0 +1,920 @@
+{
+	"info": {
+		"_postman_id": "b357b9e5-be7a-40c3-9795-731226f62af2",
+		"name": "!",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "25961869"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"carlo1@mail.com\",\r\n    \"password\": \"admin123\",\r\n    \"mobileNumber\": \"09123456789\",\r\n    \"firstName\": \"Mike\",\r\n    \"lastName\": \"Mikeyyy\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/users/register"
+					},
+					"response": []
+				},
+				{
+					"name": "register Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"admin\",\r\n    \"lastName\": \"admin\",\r\n    \"mobileNo\": \"1234567890\",\r\n    \"email\": \"admin@mail.com\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://titan-api.onrender.com/users/register"
+					},
+					"response": []
+				},
+				{
+					"name": "register Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@mail.com\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/users/register"
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@mail.com\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/users/login"
+					},
+					"response": []
+				},
+				{
+					"name": "check-if-email-exist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin12@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/users/check-email"
+					},
+					"response": []
+				},
+				{
+					"name": "admin-update [ admin-only ]",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZjViM2FhMWQ5MGJkODEzYmQ5OWMzNiIsImVtYWlsIjoic3VwZXJhZG1pbkBtYWlsLmNvbSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTY5MzgyMzk0M30.sjJNrKbizeXAOJdpTGSWp2KMw0Oy6FMdnhfQjy-kscY"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@mail.com\",\r\n    \"isAdmin\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/users/admin-update"
+					},
+					"response": []
+				},
+				{
+					"name": "delete-user [ admin-only ]",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZjViM2FhMWQ5MGJkODEzYmQ5OWMzNiIsImVtYWlsIjoic3VwZXJhZG1pbkBtYWlsLmNvbSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTY5MzgyMzk0M30.sjJNrKbizeXAOJdpTGSWp2KMw0Oy6FMdnhfQjy-kscY"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@mail.com\",\r\n    \"isActive\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/users/delete-user"
+					},
+					"response": []
+				},
+				{
+					"name": "active-users [ admin-only ]",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZjViM2FhMWQ5MGJkODEzYmQ5OWMzNiIsImVtYWlsIjoic3VwZXJhZG1pbkBtYWlsLmNvbSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTY5MzgyMzk0M30.sjJNrKbizeXAOJdpTGSWp2KMw0Oy6FMdnhfQjy-kscY"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@mail.com\",\r\n    \"isAdmin\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/users/active-users"
+					},
+					"response": []
+				},
+				{
+					"name": "all-users [ admin-only ]",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZjViM2FhMWQ5MGJkODEzYmQ5OWMzNiIsImVtYWlsIjoic3VwZXJhZG1pbkBtYWlsLmNvbSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTY5MzgyMzk0M30.sjJNrKbizeXAOJdpTGSWp2KMw0Oy6FMdnhfQjy-kscY"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@mail.com\",\r\n    \"isAdmin\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/users/active-users"
+					},
+					"response": []
+				},
+				{
+					"name": "user-details [ using-token ]",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{user}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/users/details"
+					},
+					"response": []
+				},
+				{
+					"name": "add-address [ users-only ]",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MGJiM2M2MzQzOGJiNGU2YzgzOGE3NCIsImVtYWlsIjoidXNlckBtYWlsLmNvbSIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2OTU4NjM0NjR9.MumPNNrBeCtVgC9LBpzeYStfMnvghfLoGas4132T6pI"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"country\": \"Philippines\",\r\n  \"firstName\": \"Mike\",\r\n  \"lastName\": \"Doe\",\r\n  \"company\": \"ABC Corp\",\r\n  \"address\": \"123 Main St\",\r\n  \"apartment\": \"4B\",\r\n  \"postalCode\": \"12345\",\r\n  \"city\": \"Anytown\",\r\n  \"region\": \"CA\",\r\n  \"phone\": \"123-456-7890\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/users/add-address"
+					},
+					"response": []
+				},
+				{
+					"name": "remove-address [ users-only ]",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/users/details"
+					},
+					"response": []
+				},
+				{
+					"name": "user-adressess [ users-only | using-token ]",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MTU3NTFmZmYyOTFiNDQxMmU1NWNlNSIsImVtYWlsIjoiYWRhLmxvdmVsYWNlQG1haWwuY29tIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTY5NTkwNzc0M30.42zLhgQFWHv6BiI5snwuPTsGZvMo4-iI3u29i-p17Yo"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/users/address"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "products",
+			"item": [
+				{
+					"name": "footwear",
+					"item": [
+						{
+							"name": "all-active footwear [ admin-only ]",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": ""
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8001/products/new-arrivals"
+							},
+							"response": []
+						},
+						{
+							"name": "non-active footwear [ admin-only ] Copy",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{superadmin}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8001/products/admin/non-active-footwear"
+							},
+							"response": []
+						},
+						{
+							"name": "archived footwear [ admin-only ]",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": ""
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8001/products/new-arrivals"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "apparel",
+					"item": [
+						{
+							"name": "all-active apparel",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{superadmin}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8001/products/admin/all-active-apparel"
+							},
+							"response": []
+						},
+						{
+							"name": "none-active apparel",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{superadmin}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8001/products/admin/all-active-apparel"
+							},
+							"response": []
+						},
+						{
+							"name": "archived apparel",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{superadmin}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8001/products/admin/archived-apparel"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "accessories",
+					"item": [
+						{
+							"name": "all-active accessories",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{superadmin}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8001/products/admin/all-active-accessories"
+							},
+							"response": []
+						},
+						{
+							"name": "none-active accessories",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{superadmin}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8001/products/admin/all-active-apparel"
+							},
+							"response": []
+						},
+						{
+							"name": "archived accessories",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{superadmin}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8001/products/admin/archived-accessories"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "shop all",
+					"item": [
+						{
+							"name": "all-active shop all",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{superadmin}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8001/products/admin/all-active-accessories"
+							},
+							"response": []
+						},
+						{
+							"name": "non-active shop all",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{superadmin}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8001/products/admin/all-active-apparel"
+							},
+							"response": []
+						},
+						{
+							"name": "archived shop all",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{superadmin}}"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8001/products/admin/archived-accessories"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "create-product [ admin-only ]",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{superadmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Nike NOCTA Distant Regards Towel\",\r\n    \"brand\":\"Nike\",\r\n    \"color\":\"Washed Coral/Midnight Navy\",\t\r\n    \"sku\":\"DR5274-664\",\r\n    \"description\":\"Whether you're soaking up the sun, gazing upon the glistening turquoise waters at Grace Bay Beach or lounging by the community pool, wishing you were a million miles away, this towel from the NOCTA 'Distant Regards' collection lets you find your peace in the world. Unplug, stretch out on the plush cotton and let the stitched-in lettering send the message for you.⁠\",\r\n    \"price\": 3795,\r\n    \"category\": \"accessories\",\r\n    \"status\": \"stock\",\r\n    \"sizes\": [\r\n        { \"size\": \"1size\", \"quantity\": 10 }\r\n    ],\r\n    \"imageLinks\": [\r\n            \"https://titan22.com/cdn/shop/files/DZ2916-700-A_a86c0870-8734-4f04-a824-fa030140e5b8_1082x.png?v=1691726475\",\r\n            \"https://titan22.com/cdn/shop/files/DZ2916-700-E_0e6ee0e4-bc57-417c-9174-f83e68028547.png?v=1691726474&width=200\",\r\n            \"https://titan22.com/cdn/shop/files/DZ2916-700-C_ce12559f-e271-4cac-a6f1-e63a8614a7b5_1082x.png?v=1691726475\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/products/create-product"
+					},
+					"response": []
+				},
+				{
+					"name": "active products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8001/products/"
+					},
+					"response": []
+				},
+				{
+					"name": "new-arrivals",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8001/products/new-arrivals"
+					},
+					"response": []
+				},
+				{
+					"name": "onSale-products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8001/products/new-arrivals"
+					},
+					"response": []
+				},
+				{
+					"name": "shop-all products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8001/products/new-arrivals"
+					},
+					"response": []
+				},
+				{
+					"name": "apparel-products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8001/products/apparel"
+					},
+					"response": []
+				},
+				{
+					"name": "footwear-products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8001/products/apparel"
+					},
+					"response": []
+				},
+				{
+					"name": "footwear-products Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8001/products/apparel"
+					},
+					"response": []
+				},
+				{
+					"name": "accessories-products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8001/products/accessories"
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve single product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8001/products/active-products"
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve-all-products [ admin only ]",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{superadmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8001/products/all"
+					},
+					"response": []
+				},
+				{
+					"name": "update-product [ admin-only ] Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{superadmin}}"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Anta\",\r\n    \"brand\":\"Anta KT8 'Ling Chee Kang'\",\r\n    \"color\":\"Ivory White/Princess Green\",\t\r\n    \"sku\":\"812331101-5\",\r\n    \"description\":\"The KT8 uses first of its kind tech through Nitrospeed™ that gives supercritical support for speed and execution.Nitrospeed™ tech gives the KT8 a lighter weight, and a more fluid motion forward.The upper is comprised of anisotropic carbon fibre and nylon with the outsole designed with wear resistant water ripples to enhance ground grip for a quick stop and pull up shot.\",\r\n    \"price\": 8995,\r\n    \"imageLinks\": [\r\n        \"https://titan22.com/cdn/shop/files/812331101-5-A_1082x.png?v=1693546754\",\r\n        \"https://titan22.com/cdn/shop/files/812331101-5-E_1082x.png?v=1693546757\",\r\n        \"https://titan22.com/cdn/shop/files/812331101-5-D_1082x.png?v=1693546753\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/products/6501741dcce2296b1de43bf9/update-product"
+					},
+					"response": []
+				},
+				{
+					"name": "archive-product [ admin-only ]",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{superadmin}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/products/64f72b9dbcaad82bd86396d4/archive-product"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "create-order [ user-only ]",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZjViMzA2NDdhODc0ZmUwNmUyNzQ2NyIsImVtYWlsIjoidXNlckBtYWlsLmNvbSIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2OTM5MTE1MTF9.ipFV_EQnIUWhdFOO6On3HaguUpbjx7v2jI5FD_NF-TQ"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"products\": [\r\n        {\r\n        \"productId\": \"string\",\r\n        \"quantity\": 5757,\r\n        \"price\": 500\r\n        },\r\n        {\r\n        \"productId\": \"string123\",\r\n        \"quantity\": 37897,\r\n        \"price\": 100\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/orders/create-order"
+					},
+					"response": []
+				},
+				{
+					"name": "all-orders [ admin-only ]",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZjViMzA2NDdhODc0ZmUwNmUyNzQ2NyIsImVtYWlsIjoidXNlckBtYWlsLmNvbSIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2OTM5MTE1MTF9.ipFV_EQnIUWhdFOO6On3HaguUpbjx7v2jI5FD_NF-TQ"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"123string\",\r\n    \"products\": [\r\n        {\r\n        \"productId\": \"123string\",\r\n        \"quantity\": 2,\r\n        \"price\": 1000\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/orders/active-users"
+					},
+					"response": []
+				},
+				{
+					"name": "all-orders [ user-only ]",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZjViMzA2NDdhODc0ZmUwNmUyNzQ2NyIsImVtYWlsIjoidXNlckBtYWlsLmNvbSIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2OTM5MTE1MTF9.ipFV_EQnIUWhdFOO6On3HaguUpbjx7v2jI5FD_NF-TQ"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"123string\",\r\n    \"products\": [\r\n        {\r\n        \"productId\": \"123string\",\r\n        \"quantity\": 2,\r\n        \"price\": 1000\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/orders/active-users"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cart",
+			"item": [
+				{
+					"name": "create-cart [ user-only ]",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MGJiM2M2MzQzOGJiNGU2YzgzOGE3NCIsImVtYWlsIjoidXNlckBtYWlsLmNvbSIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2OTUzOTIyMDJ9.ejsIciLaLox9vkCK4UrMR88XvkgPiXS5twrCv5fpkmo"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"items\": [\r\n    {\r\n      \"productId\": \"650672313d1e5f1d29f67e61\",\r\n      \"size\": \"1\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8001/cart/add-to-cart"
+					},
+					"response": []
+				},
+				{
+					"name": "get-cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MGJiM2M2MzQzOGJiNGU2YzgzOGE3NCIsImVtYWlsIjoidXNlckBtYWlsLmNvbSIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2OTU0NDcwMzh9.EA04wFAzxd3PerR6Lcopi39I6n3oCqzjVmeOfcYM88M"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8001/cart/get-cart"
+					},
+					"response": []
+				},
+				{
+					"name": "login user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"coldmintblade\",\r\n    \"password\": \"effocmintblade\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:4000/users/login"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "brands",
+			"item": [
+				{
+					"name": "retrieve adidas",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve adidas Copy",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve anta",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "superadmin",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZjcyYTlhNzVhNmJiNTMzYjAxYjAxNSIsImVtYWlsIjoic3VwZXJhZG1pbkBtYWlsLmNvbSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTY5MzkyMDEzNX0.EeoHBnK6oje5fMe0XKODnpMM4RES34-Yn7a5RAhUGQU"
+		},
+		{
+			"key": "user",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZjcyYWRhNzVhNmJiNTMzYjAxYjAxZCIsImVtYWlsIjoidXNlckBtYWlsLmNvbSIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2OTM5MjAxOTh9.pssZ8Rj1UeMuS1b2v8h1P31i-eucnBIEvuCPugXMqKI"
+		}
+	]
+}
